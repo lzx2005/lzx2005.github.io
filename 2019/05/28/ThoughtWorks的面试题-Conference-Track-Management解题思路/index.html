@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.5.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/icon.png?v=6.5.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon.png?v=6.5.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icon.png?v=6.5.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.5.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.5.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="会议排期管理 题目 最近看到一个ThoughtWorks的面试题，这边实现一下，问题如下： Problem Two: Conference Track Management You are planning a big programming conference and have received many proposals which have passed the initial scre">
+<meta name="keywords" content="面试,算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ThoughtWorks的面试题:Conference Track Management解题思路">
+<meta property="og:url" content="https://lzx2005.github.io/2019/05/28/ThoughtWorks的面试题-Conference-Track-Management解题思路/index.html">
+<meta property="og:site_name" content="鸦鸦的笔记本">
+<meta property="og:description" content="会议排期管理 题目 最近看到一个ThoughtWorks的面试题，这边实现一下，问题如下： Problem Two: Conference Track Management You are planning a big programming conference and have received many proposals which have passed the initial scre">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://lzx2005.github.io/2019/05/28/ThoughtWorks的面试题-Conference-Track-Management解题思路/entities.png">
+<meta property="og:updated_time" content="2019-09-10T07:28:52.430Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ThoughtWorks的面试题:Conference Track Management解题思路">
+<meta name="twitter:description" content="会议排期管理 题目 最近看到一个ThoughtWorks的面试题，这边实现一下，问题如下： Problem Two: Conference Track Management You are planning a big programming conference and have received many proposals which have passed the initial scre">
+<meta name="twitter:image" content="https://lzx2005.github.io/2019/05/28/ThoughtWorks的面试题-Conference-Track-Management解题思路/entities.png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="鸦鸦的笔记本" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="https://lzx2005.github.io/2019/05/28/ThoughtWorks的面试题-Conference-Track-Management解题思路/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>ThoughtWorks的面试题:Conference Track Management解题思路 | 鸦鸦的笔记本</title>
+  
+
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?85dff9f12558e99a4b79bc0dd599a88b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">鸦鸦的笔记本</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">想学会走路，必须先学会跑步</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://lzx2005.github.io/2019/05/28/ThoughtWorks的面试题-Conference-Track-Management解题思路/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Raven">
+      <meta itemprop="description" content="本站记录了我在学习工作生活中遇到的问题和思考。">
+      <meta itemprop="image" content="/images/a1.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="鸦鸦的笔记本">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ThoughtWorks的面试题:Conference Track Management解题思路
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-05-28 17:33:53" itemprop="dateCreated datePublished" datetime="2019-05-28T17:33:53+08:00">2019-05-28</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-09-10 15:28:52" itemprop="dateModified" datetime="2019-09-10T15:28:52+08:00">2019-09-10</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/面试/" itemprop="url" rel="index"><span itemprop="name">面试</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/05/28/ThoughtWorks的面试题-Conference-Track-Management解题思路/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/2019/05/28/ThoughtWorks的面试题-Conference-Track-Management解题思路/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="会议排期管理">会议排期管理</h1>
+<h2 id="题目">题目</h2>
+<p>最近看到一个ThoughtWorks的面试题，这边实现一下，问题如下：</p>
+<p><strong>Problem Two: Conference Track Management</strong></p>
+<p>You are planning a big programming conference and have received many proposals which have passed the initial screen process but you're having trouble fitting them into the time constraints of the day -- there are so many possibilities! So you write a program to do it for you.</p>
+<ul>
+<li>The conference has multiple tracks each of which has a morning and afternoon session.</li>
+<li>Each session contains multiple talks.</li>
+<li>Morning sessions begin at 9am and must finish before 12 noon, for lunch.</li>
+<li>Afternoon sessions begin at 1pm and must finish in time for the networking event.</li>
+<li>The networking event can start no earlier than 4:00 and no later than 5:00.</li>
+<li>No talk title has numbers in it.</li>
+<li>All talk lengths are either in minutes (not hours) or lightning (5 minutes).</li>
+<li>Presenters will be very punctual; there needs to be no gap between sessions.</li>
+</ul>
+<p>Note that depending on how you choose to complete this problem, your solution may give a different ordering or combination of talks into tracks. This is acceptable; you don’t need to exactly duplicate the sample output given here.</p>
+<p><strong>Test input:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Writing Fast Tests Against Enterprise Rails 60min</span><br><span class="line">Overdoing it in Python 45min</span><br><span class="line">Lua for the Masses 30min</span><br><span class="line">Ruby Errors from Mismatched Gem Versions 45min</span><br><span class="line">Common Ruby Errors 45min</span><br><span class="line">Rails for Python Developers lightning</span><br><span class="line">Communicating Over Distance 60min</span><br><span class="line">Accounting-Driven Development 45min</span><br><span class="line">Woah 30min</span><br><span class="line">Sit Down and Write 30min</span><br><span class="line">Pair Programming vs Noise 45min</span><br><span class="line">Rails Magic 60min</span><br><span class="line">Ruby on Rails: Why We Should Move On 60min</span><br><span class="line">Clojure Ate Scala (on my project) 45min</span><br><span class="line">Programming in the Boondocks of Seattle 30min</span><br><span class="line">Ruby vs. Clojure for Back-End Development 30min</span><br><span class="line">Ruby on Rails Legacy App Maintenance 60min</span><br><span class="line">A World Without HackerNews 30min</span><br><span class="line">User Interface CSS in Rails Apps 30min</span><br></pre></td></tr></table></figure>
+<p><strong>Test output:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">Track 1:</span><br><span class="line">09:00AM Writing Fast Tests Against Enterprise Rails 60min</span><br><span class="line">10:00AM Overdoing it in Python 45min</span><br><span class="line">10:45AM Lua for the Masses 30min</span><br><span class="line">11:15AM Ruby Errors from Mismatched Gem Versions 45min</span><br><span class="line">12:00PM Lunch</span><br><span class="line">01:00PM Ruby on Rails: Why We Should Move On 60min</span><br><span class="line">02:00PM Common Ruby Errors 45min</span><br><span class="line">02:45PM Pair Programming vs Noise 45min</span><br><span class="line">03:30PM Programming in the Boondocks of Seattle 30min</span><br><span class="line">04:00PM Ruby vs. Clojure for Back-End Development 30min</span><br><span class="line">04:30PM User Interface CSS in Rails Apps 30min</span><br><span class="line">05:00PM Networking Event</span><br><span class="line"></span><br><span class="line">Track 2:</span><br><span class="line">09:00AM Communicating Over Distance 60min</span><br><span class="line">10:00AM Rails Magic 60min</span><br><span class="line">11:00AM Woah 30min</span><br><span class="line">11:30AM Sit Down and Write 30min</span><br><span class="line">12:00PM Lunch</span><br><span class="line">01:00PM Accounting-Driven Development 45min</span><br><span class="line">01:45PM Clojure Ate Scala (on my project) 45min</span><br><span class="line">02:30PM A World Without HackerNews 30min</span><br><span class="line">03:00PM Ruby on Rails Legacy App Maintenance 60min</span><br><span class="line">04:00PM Rails for Python Developers lightning</span><br><span class="line">05:00PM Networking Event</span><br></pre></td></tr></table></figure>
+<h2 id="代码介绍">代码介绍</h2>
+<h3 id="实体类">实体类</h3>
+<p>会议管理系统包含多个实体类</p>
+<ul>
+<li>Track : 负责记录每一天的行程，所有的排期，可以包含多个Track，也就是多天。</li>
+<li>Session : 负责记录每一天上午，或者下午(可以扩展比如晚上)，记录了总共可以分配的时间，剩余可用的时间，开始时间(早上是9点，下午是1点)以及Talk列表。</li>
+<li>Talk : 一次会议，包含的是会议标题，会议耗时。</li>
+</ul>
+<p><img src="/2019/05/28/ThoughtWorks的面试题-Conference-Track-Management解题思路/entities.png"></p>
+<p>对于使用者来说，只需要进行一次<code>new Track()</code>操作，即可创建出一个包含<code>上午</code>和<code>下午</code>两个Session的Track，上午可用时间为180分钟，下午可用时间为240分钟，每一个Session生成了一个空的Talk List。</p>
+<h3 id="枚举类">枚举类</h3>
+<ul>
+<li>SessionType : 定义一个Session，包括Session总共可分配时间以及Session开始时间，使用LocalTime定义时分秒。</li>
+</ul>
+<h3 id="总流程类">总流程类</h3>
+<ul>
+<li>TrackService : 处理传递过来的Talk列表，分配时间，安排会议，翻译一个Track列表。</li>
+</ul>
+<h3 id="工具类">工具类</h3>
+<ul>
+<li>FileUtils : 读取文件每一行，返回一个List&lt;String&gt;</li>
+</ul>
+<h2 id="调用流程">调用流程</h2>
+<ol type="1">
+<li>读取文件：</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">List&lt;String&gt; list = FileUtils.read(<span class="keyword">new</span> File(FileLaction.TEXT_FILE));</span><br><span class="line"><span class="keyword">if</span> (list == <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"file is null"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2" type="1">
+<li>生成Talk列表</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">TreeSet&lt;Talk&gt; talks = <span class="keyword">new</span> TreeSet&lt;&gt;(); <span class="comment">//使用TreeSet是可以让列表以时间排序</span></span><br><span class="line">list.forEach(title -&gt; &#123;</span><br><span class="line">    Talk talk = <span class="keyword">new</span> Talk(title);</span><br><span class="line">    talks.add(talk);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<ol start="3" type="1">
+<li>调用Service</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">TrackService trackService = TrackService.getInstance(); <span class="comment">//TrackService是单例的</span></span><br><span class="line">List&lt;Track&gt; tracks = trackService.manage(talks);</span><br></pre></td></tr></table></figure>
+<ol start="4" type="1">
+<li>格式化输出</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; tracks.size(); i++) &#123;</span><br><span class="line">    Track track = tracks.get(i);</span><br><span class="line">    System.out.println(<span class="string">"Track "</span> + (i + <span class="number">1</span>) + <span class="string">":"</span>);</span><br><span class="line">    System.out.print(track.getMorning().toString());</span><br><span class="line">    System.out.println(<span class="string">"12:00PM Lunch"</span>);</span><br><span class="line">    System.out.print(track.getAfternoon().toString());</span><br><span class="line">    System.out.println(<span class="string">"05:00PM Networking Event"</span>);</span><br><span class="line">    System.out.println();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="5" type="1">
+<li>得到结果</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">Track <span class="number">1</span>:</span><br><span class="line"><span class="number">09</span>:<span class="number">00</span>AM Communicating Over Distance <span class="number">60</span>min</span><br><span class="line"><span class="number">10</span>:<span class="number">00</span>AM Ruby on Rails: Why We Should Move On <span class="number">60</span>min</span><br><span class="line"><span class="number">11</span>:<span class="number">00</span>AM Writing Fast Tests Against Enterprise Rails <span class="number">60</span>min</span><br><span class="line"><span class="number">12</span>:<span class="number">00</span>PM Lunch</span><br><span class="line"><span class="number">01</span>:<span class="number">00</span>PM Rails Magic <span class="number">60</span>min</span><br><span class="line"><span class="number">02</span>:<span class="number">00</span>PM Ruby on Rails Legacy App Maintenance <span class="number">60</span>min</span><br><span class="line"><span class="number">03</span>:<span class="number">00</span>PM Overdoing it in Python <span class="number">45</span>min</span><br><span class="line"><span class="number">03</span>:<span class="number">45</span>PM Ruby Errors from Mismatched Gem Versions <span class="number">45</span>min</span><br><span class="line"><span class="number">04</span>:<span class="number">30</span>PM Programming in the Boondocks of Seattle <span class="number">30</span>min</span><br><span class="line"><span class="number">05</span>:<span class="number">00</span>PM Networking Event</span><br><span class="line"></span><br><span class="line">Track <span class="number">2</span>:</span><br><span class="line"><span class="number">09</span>:<span class="number">00</span>AM Accounting-Driven Development <span class="number">45</span>min</span><br><span class="line"><span class="number">09</span>:<span class="number">45</span>AM Pair Programming vs Noise <span class="number">45</span>min</span><br><span class="line"><span class="number">10</span>:<span class="number">30</span><span class="function">AM Clojure Ate <span class="title">Scala</span> <span class="params">(on my project)</span> 45min</span></span><br><span class="line"><span class="function">11:15AM Common Ruby Errors 45min</span></span><br><span class="line"><span class="function">12:00PM Lunch</span></span><br><span class="line"><span class="function">01:00PM Woah 30min</span></span><br><span class="line"><span class="function">01:30PM Ruby vs. Clojure <span class="keyword">for</span> Back-End Development 30min</span></span><br><span class="line"><span class="function">02:00PM Sit Down and Write 30min</span></span><br><span class="line"><span class="function">02:30PM Lua <span class="keyword">for</span> the Masses 30min</span></span><br><span class="line"><span class="function">03:00PM User Interface CSS in Rails Apps 30min</span></span><br><span class="line"><span class="function">03:30PM A World Without HackerNews 30min</span></span><br><span class="line"><span class="function">04:00PM Rails <span class="keyword">for</span> Python Developers lightning</span></span><br><span class="line"><span class="function">05:00PM Networking Event</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>我靠这份代码拿到了面试机会。</p>
+</blockquote>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/面试/" rel="tag"># 面试</a>
+          
+            <a href="/tags/算法/" rel="tag"># 算法</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/23/RocketMQ单机部署远程访问踩到的一个坑/" rel="next" title="RocketMQ单机部署远程访问踩到的一个坑">
+                <i class="fa fa-chevron-left"></i> RocketMQ单机部署远程访问踩到的一个坑
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/06/11/扩展Flink使其可以接收RocketMQ消息/" rel="prev" title="扩展Flink使其可以接收RocketMQ消息">
+                扩展Flink使其可以接收RocketMQ消息 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/a1.jpg" alt="Raven">
+            
+              <p class="site-author-name" itemprop="name">Raven</p>
+              <p class="site-description motion-element" itemprop="description">本站记录了我在学习工作生活中遇到的问题和思考。</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">10</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/lzx2005" title="GitHub &rarr; https://github.com/lzx2005" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:lizhengxian2005@gmail.com" title="E-Mail &rarr; mailto:lizhengxian2005@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/2557929062" title="Weibo &rarr; https://weibo.com/2557929062" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://instagram.com/lzx2005rrr" title="Instagram &rarr; https://instagram.com/lzx2005rrr" rel="noopener" target="_blank"><i class="fa fa-fw fa-instagram"></i>Instagram</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#会议排期管理"><span class="nav-number">1.</span> <span class="nav-text">会议排期管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#题目"><span class="nav-number">1.1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码介绍"><span class="nav-number">1.2.</span> <span class="nav-text">代码介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#实体类"><span class="nav-number">1.2.1.</span> <span class="nav-text">实体类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#枚举类"><span class="nav-number">1.2.2.</span> <span class="nav-text">枚举类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总流程类"><span class="nav-number">1.2.3.</span> <span class="nav-text">总流程类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#工具类"><span class="nav-number">1.2.4.</span> <span class="nav-text">工具类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调用流程"><span class="nav-number">1.3.</span> <span class="nav-text">调用流程</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">  <a href="http://www.miitbeian.gov.cn" rel="noopener" target="_blank">浙ICP备16002440号-1 </a>&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Raven</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v6.5.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.5.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.5.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.5.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.5.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.5.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'wxGApfJMxpmAAl29YGMIAFzw-gzGzoHsz',
+        appKey: 'ghLxmDcHA0UutRBUtqIFvKpX',
+        placeholder: '请输入评论',
+        avatar:'mm',
+        meta:guest,
+        pageSize:'10' || 10,
+        visitor: false
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=6.5.0"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=6.5.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
